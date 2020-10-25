@@ -22,7 +22,14 @@ export default function getVariantPriceRange(variantId, variants) {
 
   if (visibleOptions.length === 0) {
     const thisVariant = variants.find((option) => option._id === variantId);
-    return getPriceRange([(thisVariant && thisVariant.price) || 0]);
+    let price = thisVariant && thisVariant.price || 0
+    if(typeof thisVariant.price === 'object') {
+      const min = price && price.min || 0;
+      const max = price && price.max || 0;
+
+      price = min === max && typeof min === 'number' && min || 0;
+    }
+    return getPriceRange([price]);
   }
 
   const prices = visibleOptions.map((option) => option.price);
